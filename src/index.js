@@ -25,17 +25,15 @@ class FilmRow extends React.Component {
                 <td>{filmData.release_year}</td>
                 <td>{filmData.length}</td>
                 <td>{filmData.rating}</td>
-                <td>{}</td>
+                <td>
+                  {filmData.category.map((filmCategory) => (
+                    <div>{filmCategory.name}</div>
+                  ))}
+                </td>
               </tr>
             </tbody>
           </table>
           <p className="filmDataBottom">Description: {filmData.description}</p>
-          <p className="filmDataBottom">
-            Review:{" "}
-            {filmData.reviews.map((filmReview) => (
-              <div class="reviews">{filmReview.consumer_review}</div>
-            ))}
-          </p>
           <p className="filmDataBottom">
             Actors:{" "}
             {filmData.actors.map((filmActor) => (
@@ -44,6 +42,12 @@ class FilmRow extends React.Component {
                   <li>{filmActor.firstName + " " + filmActor.lastName} </li>
                 </ul>
               </div>
+            ))}
+          </p>
+          <p className="filmDataBottom">
+            Review:{" "}
+            {filmData.reviews.map((filmReview) => (
+              <div class="reviews">{filmReview.consumer_review}</div>
             ))}
           </p>
         </div>
@@ -136,15 +140,19 @@ class FilmWikiHomePage extends React.Component {
 
   render() {
     return (
-      <div className="FilmWikiHomePageCenter">
-        <SearchBar
-          filterText={this.state.filterText}
-          onFilterTextChange={this.handleFilterTextChange}
-        />
-        <FilmTable
-          films={this.props.films}
-          filterText={this.state.filterText}
-        />
+      <div>
+        <div></div>
+        <div className="FilmWikiHomePageCenter">
+          <SearchBar
+            filterText={this.state.filterText}
+            onFilterTextChange={this.handleFilterTextChange}
+          />
+          <FilmTable
+            films={this.props.films}
+            filterText={this.state.filterText}
+          />
+        </div>
+        <div id="IronMan"></div>
       </div>
     );
   }
