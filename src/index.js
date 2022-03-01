@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import axios from "axios";
-import bootstrap from "bootstrap";
+import bootstrap, { Dropdown } from "bootstrap";
 
 class FilmRow extends React.Component {
   render() {
@@ -44,18 +44,197 @@ class FilmRow extends React.Component {
               </div>
             ))}
           </p>
-          <p className="filmDataBottom">
+          <p className="filmDataBottom" id="reviewData">
             Review:{" "}
             {filmData.reviews.map((filmReview) => (
-              <div class="reviews">{filmReview.consumer_review}</div>
+              <div class="reviews">
+                <ul>
+                  <li>
+                    {filmReview.consumer_review} ID: {filmReview.review_id}
+                  </li>
+                </ul>
+              </div>
             ))}
           </p>
         </div>
         <div>
-          <button className="reviewButtons">Add Review</button>
-          <button className="reviewButtons">Delete Review</button>
+          <p>
+            Film ID: {filmData.film_id}
+            <br />
+            <Post className="post" />
+            <Put />
+            <Delete />
+          </p>
+          <p></p>
+          <p></p>
+          <br />
+          <br />
           <br />
         </div>
+      </div>
+    );
+  }
+}
+
+class Post extends React.Component {
+  state = {
+    film_id: "",
+    consumer_review: "",
+  };
+
+  onFilmIDChange = (e) => {
+    this.setState({
+      film_id: e.target.value,
+    });
+  };
+
+  onConsumerReviewChange = (e) => {
+    this.setState({
+      consumer_review: e.target.value,
+    });
+  };
+
+  handleSubmit = (e) => {
+    e.preventDefault();
+    const data = {
+      film_id: this.state.film_id,
+      consumer_review: this.state.consumer_review,
+    };
+    console.log(data);
+    axios
+      .post(
+        `http://localhost:8080/Home/Review/Add?film_id=${this.state.film_id}&consumer_review=${this.state.consumer_review}`
+      )
+      .then((response) => console.log(response))
+      .catch((err) => console.log(err));
+  };
+
+  render() {
+    return (
+      <div className="post">
+        <form className="post" onSubmit={this.handleSubmit}>
+          <input
+            placeholder="Film ID"
+            value={this.state.film_id}
+            onChange={this.onFilmIDChange}
+            required
+          />
+          <br></br>
+          <input
+            placeholder="Review"
+            value={this.state.consumer_review}
+            onChange={this.onConsumerReviewChange}
+            required
+          />
+          <br></br>
+
+          <button type="submit">Create Post</button>
+        </form>
+        <br></br>
+      </div>
+    );
+  }
+}
+
+class Put extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      review_id: "",
+      consumer_review: "",
+      updatedAt: null,
+    };
+  }
+
+  onReviewIDChange = (e) => {
+    this.setState({
+      review_id: e.target.value,
+    });
+  };
+
+  onConsumerReviewChange = (e) => {
+    this.setState({
+      consumer_review: e.target.value,
+    });
+  };
+
+  handleSubmit = (e) => {
+    e.preventDefault();
+
+    // PUT request using axios with error handling
+
+    axios
+      .put(
+        "http://localhost:8080/Home/Review/Update/" +
+          this.state.review_id +
+          "?consumer_review=" +
+          this.state.consumer_review
+      )
+      // .then((response) => {
+      //   this.setState({ updatedAt: response.data.updatedAt }),
+      //     console.log(response.data);
+      // });
+      .then((response) => console.log(response))
+      .catch((err) => console.log(err));
+  };
+
+  render() {
+    const { errorMessage } = this.state;
+    return (
+      <div className="put">
+        <form className="put" onSubmit={this.handleSubmit}>
+          <input
+            placeholder="Review ID"
+            value={this.state.review_id}
+            onChange={this.onReviewIDChange}
+            required
+          />
+          <br></br>
+          <input
+            placeholder="Review"
+            value={this.state.consumer_review}
+            onChange={this.onConsumerReviewChange}
+            required
+          />
+          <br></br>
+          <button type="submit">Update Post</button>
+        </form>
+        <br></br>
+      </div>
+    );
+  }
+}
+
+class Delete extends React.Component {
+  state = {
+    review_id: "",
+  };
+
+  handleChange = (event) => {
+    this.setState({ review_id: event.target.value });
+  };
+
+  handleSubmit = (event) => {
+    event.preventDefault();
+
+    axios
+      .delete(
+        `http://localhost:8080/Home/Review/Delete/${this.state.review_id}`
+      )
+      .then((response) => {
+        console.log(response);
+        console.log(response.data);
+      });
+  };
+
+  render() {
+    return (
+      <div>
+        <form onSubmit={this.handleSubmit}>
+          <input placeholder="Review ID" onChange={this.handleChange} />
+          <button type="submit">Delete</button>
+        </form>
       </div>
     );
   }
@@ -80,8 +259,6 @@ class FilmTable extends React.Component {
     const rows = [];
 
     this.state.films.forEach((film) => {
-      console.log(film.actors[0]);
-
       if (film.title.toLowerCase().indexOf(filterText) === -1) {
         return;
       }
@@ -91,10 +268,6 @@ class FilmTable extends React.Component {
     return (
       <div>
         <div>{rows}</div>
-        <div>
-          <br />
-          <button>Add Film</button>
-        </div>
       </div>
     );
   }
@@ -107,7 +280,7 @@ class SearchBar extends React.Component {
       <form className="SearchBar">
         <input
           type="text"
-          placeholder="Search...."
+          placeholder="Search Film...."
           value={filterText}
           onChange={(e) => this.props.onFilterTextChange(e.target.value)}
         />
@@ -152,90 +325,9 @@ class FilmWikiHomePage extends React.Component {
             filterText={this.state.filterText}
           />
         </div>
-        <div id="IronMan"></div>
       </div>
     );
   }
 }
-
-// const FILMS = [
-//   {
-//     film_id: 1,
-//     title: "Rush Hour",
-//     description: "Good",
-//     release_year: 1999,
-//     length: 134,
-//     rating: "PG",
-//     language_id: 1,
-//   },
-//   {
-//     film_id: 2,
-//     title: "Rush Hour 2",
-//     description: "very Good",
-//     release_year: 2000,
-//     length: 140,
-//     rating: "G",
-//     language_id: 1,
-//   },
-//   {
-//     film_id: 3,
-//     title: "Adventures of Gym Lad",
-//     description: "Good Stuff",
-//     release_year: 2000,
-//     length: 140,
-//     rating: "OG",
-//     language_id: 1,
-//   },
-// ];
-
-// const ACTORS = [
-//   {
-//     actor_id: 1,
-//     first_title: "Jackie",
-//     last_title: "Chan",
-//   },
-//   {
-//     actor_id: 2,
-//     first_title: "Chris",
-//     last_title: "Tucker",
-//   },
-//   {
-//     actor_id: 3,
-//     first_title: "Creatine",
-//     last_title: "Callum",
-//   },
-// ];
-
-// const CATEGORIES = [
-//   {
-//     category_id: 1,
-//     title: "Action",
-//   },
-//   {
-//     category_id: 2,
-//     title: "Comedy",
-//   },
-//   {
-//     category_id: 3,
-//     title: "Gym Lads",
-//   },
-// ];
-
-// const LANGUAGES = [
-//   {
-//     language_id: 1,
-//     title: "English",
-//   },
-//   {
-//     language_id: 2,
-//     title: "Spanish",
-//   },
-//   {
-//     language_id: 3,
-//     title: "GymLadish",
-//   },
-// ];
-
-// z
 
 ReactDOM.render(<FilmWikiHomePage />, document.getElementById("root"));
