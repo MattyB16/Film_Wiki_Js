@@ -6,6 +6,9 @@ body {
   background-color: rgb(0, 0, 0);
   color: white;
   text-align: center;
+  border-style: groove;
+  border-width: 1px;
+  border-color: gray;
   /* margin-left: 100px;
   margin-right: 100px; */
 }
@@ -25,10 +28,13 @@ body {
 
 th,
 td {
-  padding: 15px;
+  padding: 10px;
 
-  border: 1px solid;
-  border-color: rgb(255, 255, 255);
+  /* border: 1px solid;
+  border-color: rgb(255, 255, 255); */
+  border-style: groove;
+  border-width: 1px;
+  border-color: rgb(200, 0, 0);
 }
 
 .reviewButtons {
@@ -52,8 +58,11 @@ td {
   border-color: gray;
 }
 
-.post {
-  float: left;
-  margin-right: 5px;
-  margin-left: 10px;
+#Map {
+  display: flex;
+  margin: 5px;
+}
+
+#bottomMap {
+  margin-bottom: 10px;
 }

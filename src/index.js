@@ -50,26 +50,24 @@ class FilmRow extends React.Component {
               <div class="reviews">
                 <ul>
                   <li>
-                    {filmReview.consumer_review} ID: {filmReview.review_id}
+                    Review ID: {filmReview.review_id} -{" "}
+                    {filmReview.consumer_review}
                   </li>
                 </ul>
               </div>
             ))}
           </p>
         </div>
-        <div>
-          <p>
+        <div id="bottomMap">
+          <p id="Map">
             Film ID: {filmData.film_id}
             <br />
-            <Post className="post" />
+          </p>
+          <p id="reviewMap">
+            <Post />
             <Put />
             <Delete />
           </p>
-          <p></p>
-          <p></p>
-          <br />
-          <br />
-          <br />
         </div>
       </div>
     );
@@ -103,10 +101,12 @@ class Post extends React.Component {
     console.log(data);
     axios
       .post(
-        `http://localhost:8080/Home/Review/Add?film_id=${this.state.film_id}&consumer_review=${this.state.consumer_review}`
+        `http://54.89.161.241:8080/Home/Review/Add?film_id=${this.state.film_id}&consumer_review=${this.state.consumer_review}`
       )
       .then((response) => console.log(response))
       .catch((err) => console.log(err));
+
+    window.location.reload(false);
   };
 
   render() {
@@ -119,18 +119,14 @@ class Post extends React.Component {
             onChange={this.onFilmIDChange}
             required
           />
-          <br></br>
           <input
             placeholder="Review"
             value={this.state.consumer_review}
             onChange={this.onConsumerReviewChange}
             required
           />
-          <br></br>
-
-          <button type="submit">Create Post</button>
+          <button type="submit">Submit</button>
         </form>
-        <br></br>
       </div>
     );
   }
@@ -143,7 +139,6 @@ class Put extends React.Component {
     this.state = {
       review_id: "",
       consumer_review: "",
-      updatedAt: null,
     };
   }
 
@@ -162,21 +157,28 @@ class Put extends React.Component {
   handleSubmit = (e) => {
     e.preventDefault();
 
-    // PUT request using axios with error handling
-
     axios
       .put(
-        "http://localhost:8080/Home/Review/Update/" +
-          this.state.review_id +
-          "?consumer_review=" +
-          this.state.consumer_review
+        `http://54.89.161.241:8080/Home/Review/Update/${this.state.review_id}?consumer_review=${this.state.consumer_review}`
       )
-      // .then((response) => {
-      //   this.setState({ updatedAt: response.data.updatedAt }),
-      //     console.log(response.data);
-      // });
+
       .then((response) => console.log(response))
       .catch((err) => console.log(err));
+
+    function delay(delayInms) {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve(2);
+        }, delayInms);
+      });
+    }
+
+    async function sample() {
+      console.log("waiting...");
+      let delayres = await delay(100);
+      window.location.reload(false);
+    }
+    sample();
   };
 
   render() {
@@ -190,17 +192,14 @@ class Put extends React.Component {
             onChange={this.onReviewIDChange}
             required
           />
-          <br></br>
           <input
             placeholder="Review"
             value={this.state.consumer_review}
             onChange={this.onConsumerReviewChange}
             required
           />
-          <br></br>
-          <button type="submit">Update Post</button>
+          <button type="submit">Update</button>
         </form>
-        <br></br>
       </div>
     );
   }
@@ -220,12 +219,27 @@ class Delete extends React.Component {
 
     axios
       .delete(
-        `http://localhost:8080/Home/Review/Delete/${this.state.review_id}`
+        `http://54.89.161.241:8080/Home/Review/Delete/${this.state.review_id}`
       )
       .then((response) => {
         console.log(response);
         console.log(response.data);
       });
+
+    function delay(delayInms) {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve(2);
+        }, delayInms);
+      });
+    }
+
+    async function sample() {
+      console.log("waiting...");
+      let delayres = await delay(100);
+      window.location.reload(false);
+    }
+    sample();
   };
 
   render() {
@@ -248,7 +262,7 @@ class FilmTable extends React.Component {
 
   componentDidMount() {
     axios
-      .get("http://localhost:8080/Home/Film/All")
+      .get("http://54.89.161.241:8080/Home/Film/All")
       .then((response) => this.setState({ films: response.data }));
   }
 
