@@ -328,7 +328,9 @@ class FilmWikiHomePage extends React.Component {
   render() {
     return (
       <div>
-        <div></div>
+        <div>
+          <h1 id="FilmWiki">FilmWiki</h1>
+        </div>
         <div className="FilmWikiHomePageCenter">
           <SearchBar
             filterText={this.state.filterText}
